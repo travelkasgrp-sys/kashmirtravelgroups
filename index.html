@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ mobileOpen: false, activeSection: 'home' }">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kashmir Travel Groups – Gateway to Heaven</title>
+  <meta name="description" content="Experience the paradise of Kashmir with curated honeymoon, adventure, and family packages. A joint venture between Gateway to Heaven Tours and Look N Book Tours." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine:  { DEFAULT: '#1A3926', light: '#2a5a3d', dark: '#0f2217', mist: '#1A392612' },
+            snow:  { DEFAULT: '#F7F5F0', warm: '#EDE9E0' },
+            sky:   { DEFAULT: '#7BB8D4', light: '#A8D4E6', dark: '#4A90B0' },
+            gold:  { DEFAULT: '#C9A96E', light: '#DFC090' },
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'serif'],
+            body:    ['"DM Sans"', 'sans-serif'],
+          },
+          backgroundImage: {
+            'hero': "linear-gradient(to bottom, rgba(15,34,23,0.45) 0%, rgba(15,34,23,0.15) 40%, rgba(15,34,23,0.7) 100%), url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1800&q=80')",
+            'section-texture': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A3926' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.8s ease forwards',
+            'fade-in': 'fadeIn 1.2s ease forwards',
+            'float':   'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeUp:  { from: { opacity: 0, transform: 'translateY(30px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
+            fadeIn:  { from: { opacity: 0 }, to: { opacity: 1 } },
+            float:   { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background-color: #F7F5F0; color: #1A3926; }
+
+    /* ── Reveal on scroll ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Decorative divider ── */
+    .ornament::before,
+    .ornament::after {
+      content: '';
+      display: inline-block;
+      width: 40px; height: 1px;
+      background: currentColor;
+      vertical-align: middle;
+      margin: 0 12px;
+      opacity: .5;
+    }
+
+    /* ── Nav glass ── */
+    .nav-glass {
+      background: rgba(15, 34, 23, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    /* ── Hero ── */
+    .hero-bg {
+      background-image: linear-gradient(to bottom, rgba(15,34,23,0.5) 0%, rgba(15,34,23,0.1) 45%, rgba(15,34,23,0.75) 100%),
+        url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1800&q=80');
+      background-size: cover;
+      background-position: center 30%;
+    }
+
+    /* ── Card hover ── */
+    .tour-card { transition: transform 0.35s ease, box-shadow 0.35s ease; }
+    .tour-card:hover { transform: translateY(-8px); box-shadow: 0 24px 48px rgba(26,57,38,0.18); }
+
+    /* ── WhatsApp pulse ── */
+    @keyframes waPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(37,211,102,0.6); }
+      70%      { box-shadow: 0 0 0 14px rgba(37,211,102,0); }
+    }
+    .wa-btn { animation: waPulse 2.5s infinite; }
+
+    /* ── Form focus ── */
+    .form-input:focus { outline: none; border-color: #7BB8D4; box-shadow: 0 0 0 3px rgba(123,184,212,0.2); }
+
+    /* ── Badge ── */
+    .price-badge {
+      background: linear-gradient(135deg, #C9A96E, #DFC090);
+      color: #fff;
+    }
+
+    /* ── Subtle grain overlay ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .4;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════
+     NAV
+═══════════════════════════════════ -->
+<nav class="nav-glass fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 sm:h-20">
+
+    <!-- Logo -->
+    <a href="#home" class="flex items-center gap-3 group">
+      <div class="w-8 h-8 rounded-full border border-gold/60 flex items-center justify-center">
+        <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      </div>
+      <div class="leading-tight">
+        <p class="font-display text-snow text-base sm:text-lg font-semibold tracking-wide leading-none">Kashmir Travel</p>
+        <p class="text-gold/80 text-[10px] tracking-[0.2em] uppercase font-body">Groups</p>
+      </div>
+    </a>
+
+    <!-- Desktop links -->
+    <ul class="hidden md:flex items-center gap-8 font-body text-sm text-snow/80">
+      <li><a href="#packages" class="hover:text-gold transition-colors">Packages</a></li>
+      <li><a href="#about" class="hover:text-gold transition-colors">About Us</a></li>
+      <li><a href="#gallery" class="hover:text-gold transition-colors">Gallery</a></li>
+      <li><a href="#contact" class="hover:text-gold transition-colors">Contact</a></li>
+    </ul>
+
+    <!-- CTA + Mobile toggle -->
+    <div class="flex items-center gap-4">
+      <a href="#contact" class="hidden sm:inline-flex items-center gap-2 bg-gold text-white text-sm font-body font-medium px-5 py-2.5 rounded-full hover:bg-gold-light transition-colors">
+        Plan Your Trip
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+      <!-- Hamburger -->
+      <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 text-snow" aria-label="Menu">
+        <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg x-show="mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div x-show="mobileOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="md:hidden border-t border-snow/10">
+    <ul class="flex flex-col py-4 px-6 gap-4 font-body text-snow/90">
+      <li><a href="#packages" @click="mobileOpen=false" class="block py-1 hover:text-gold">Packages</a></li>
+      <li><a href="#about"    @click="mobileOpen=false" class="block py-1 hover:text-gold">About Us</a></li>
+      <li><a href="#gallery"  @click="mobileOpen=false" class="block py-1 hover:text-gold">Gallery</a></li>
+      <li><a href="#contact"  @click="mobileOpen=false" class="block py-1 hover:text-gold">Contact</a></li>
+      <li><a href="#contact"  @click="mobileOpen=false" class="inline-flex items-center gap-2 mt-1 bg-gold text-white text-sm px-5 py-2.5 rounded-full w-fit">Plan Your Trip →</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════
+     HERO
+═══════════════════════════════════ -->
+<section id="home" class="hero-bg min-h-screen flex items-end pb-20 sm:pb-28">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 w-full">
+    <div class="max-w-3xl animate-fade-up" style="animation-delay:.2s">
+      <p class="ornament text-gold/90 font-body text-xs tracking-[0.35em] uppercase mb-5">Kashmir Travel Groups</p>
+      <h1 class="font-display text-snow text-5xl sm:text-7xl lg:text-8xl font-light leading-[1.05] mb-6">
+        Where Heaven<br/>
+        <em class="italic text-gold">Meets Earth</em>
+      </h1>
+      <p class="font-body text-snow/75 text-base sm:text-lg max-w-xl mb-10 leading-relaxed">
+        Immerse yourself in the timeless beauty of Kashmir — curated journeys through shikara-laced lakes, Himalayan meadows, and Mughal gardens.
+      </p>
+      <div class="flex flex-wrap gap-4 items-center">
+        <a href="#contact" class="bg-gold hover:bg-gold-light transition-colors text-white font-body font-medium text-sm sm:text-base px-8 py-4 rounded-full inline-flex items-center gap-2 shadow-lg">
+          Plan Your Trip
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a href="#packages" class="text-snow/80 hover:text-snow font-body text-sm inline-flex items-center gap-2 group">
+          View Packages
+          <span class="w-8 h-px bg-snow/50 group-hover:bg-snow transition-colors"></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="grid grid-cols-3 gap-4 mt-16 max-w-md">
+      <div class="text-center">
+        <p class="font-display text-gold text-3xl sm:text-4xl font-light">12+</p>
+        <p class="font-body text-snow/60 text-xs tracking-wide uppercase mt-1">Years Experience</p>
+      </div>
+      <div class="text-center border-x border-snow/15">
+        <p class="font-display text-gold text-3xl sm:text-4xl font-light">4K+</p>
+        <p class="font-body text-snow/60 text-xs tracking-wide uppercase mt-1">Happy Travellers</p>
+      </div>
+      <div class="text-center">
+        <p class="font-display text-gold text-3xl sm:text-4xl font-light">50+</p>
+        <p class="font-body text-snow/60 text-xs tracking-wide uppercase mt-1">Curated Tours</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     PARTNERSHIP BANNER
+═══════════════════════════════════ -->
+<section id="about" class="bg-pine text-snow py-16 sm:py-20 relative overflow-hidden">
+  <!-- decorative bg circles -->
+  <div class="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-pine-light opacity-30 blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-sky/10 blur-2xl pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 reveal">
+    <p class="ornament text-gold/80 font-body text-xs tracking-[0.35em] uppercase text-center mb-10">Our Partnership</p>
+
+    <div class="grid md:grid-cols-3 gap-8 items-center">
+      <!-- Left partner -->
+      <div class="text-center md:text-right">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full border border-gold/40 mb-4">
+          <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21l9-18 9 18M5 17h14"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-gold font-semibold mb-2">Gateway to Heaven</h3>
+        <p class="font-body text-snow/65 text-sm leading-relaxed">Tours & Travels — Two decades of on-ground expertise in Kashmir's most exclusive circuits.</p>
+      </div>
+
+      <!-- Centre divider -->
+      <div class="flex flex-col items-center gap-4 py-6 md:py-0">
+        <div class="w-px h-12 md:h-16 bg-gold/30 hidden md:block"></div>
+        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gold/15 border border-gold/40">
+          <span class="font-display text-gold text-xs font-semibold tracking-wider">JV</span>
+        </div>
+        <div class="w-px h-12 md:h-16 bg-gold/30 hidden md:block"></div>
+        <p class="font-display text-snow/50 text-sm italic text-center max-w-[200px]">Two trusted names, one unforgettable journey</p>
+      </div>
+
+      <!-- Right partner -->
+      <div class="text-center md:text-left">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full border border-sky/40 mb-4">
+          <svg class="w-6 h-6 text-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 9m0 8V9m0 0L9 7"/></svg>
+        </div>
+        <h3 class="font-display text-xl text-sky font-semibold mb-2">Look N Book Tours</h3>
+        <p class="font-body text-snow/65 text-sm leading-relaxed">Digital-first booking expertise, bringing seamless planning and end-to-end customer support.</p>
+      </div>
+    </div>
+
+    <!-- Trust bar -->
+    <div class="mt-12 pt-10 border-t border-snow/10 flex flex-wrap justify-center gap-8 sm:gap-16">
+      <div class="flex items-center gap-3 text-snow/70">
+        <svg class="w-5 h-5 text-gold shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        <span class="font-body text-sm">Government Registered</span>
+      </div>
+      <div class="flex items-center gap-3 text-snow/70">
+        <svg class="w-5 h-5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span class="font-body text-sm">100% Customizable Itineraries</span>
+      </div>
+      <div class="flex items-center gap-3 text-snow/70">
+        <svg class="w-5 h-5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span class="font-body text-sm">24/7 Trip Support</span>
+      </div>
+      <div class="flex items-center gap-3 text-snow/70">
+        <svg class="w-5 h-5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+        <span class="font-body text-sm">4.9 ★ Rated on Google</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     PACKAGES
+═══════════════════════════════════ -->
+<section id="packages" class="py-20 sm:py-28 bg-snow bg-section-texture">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8">
+    <div class="text-center mb-14 reveal">
+      <p class="ornament text-pine/60 font-body text-xs tracking-[0.35em] uppercase mb-4">Curated Experiences</p>
+      <h2 class="font-display text-pine text-4xl sm:text-5xl lg:text-6xl font-light">Our Signature<br/><em class="italic text-gold">Packages</em></h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+
+      <!-- Card 1: Honeymoon -->
+      <div class="tour-card bg-white rounded-2xl overflow-hidden shadow-sm border border-pine/8 reveal flex flex-col" style="transition-delay:.05s">
+        <div class="relative h-56 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80" alt="Honeymoon Kashmir" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy"/>
+          <div class="absolute top-4 left-4 price-badge text-xs font-body font-medium px-3 py-1.5 rounded-full shadow">
+            From ₹28,999/person
+          </div>
+          <div class="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-white/80 to-transparent"></div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <p class="font-body text-xs text-sky uppercase tracking-widest mb-1">Romance</p>
+              <h3 class="font-display text-pine text-2xl font-semibold">Honeymoon Bliss</h3>
+            </div>
+            <svg class="w-8 h-8 text-gold/40 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          </div>
+          <p class="font-body text-pine/65 text-sm leading-relaxed mb-5">Dal Lake Shikara rides, private houseboat stays, candlelit dinners in Pahalgam, and a scenic Gulmarg gondola for two.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="flex items-center gap-2 font-body text-xs text-pine/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>7 Nights / 8 Days</li>
+            <li class="flex items-center gap-2 font-body text-xs text-pine/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Houseboat + 4★ Hotel</li>
+            <li class="flex items-center gap-2 font-body text-xs text-pine/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>All Transfers Included</li>
+          </ul>
+          <a href="#contact" class="mt-auto block text-center bg-pine text-snow font-body text-sm font-medium py-3 px-6 rounded-full hover:bg-pine-light transition-colors">Request This Package</a>
+        </div>
+      </div>
+
+      <!-- Card 2: Adventure (featured) -->
+      <div class="tour-card bg-pine rounded-2xl overflow-hidden shadow-lg reveal flex flex-col md:-mt-4 md:-mb-4" style="transition-delay:.12s">
+        <div class="relative h-56 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=700&q=80" alt="Adventure Kashmir" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy"/>
+          <div class="absolute top-4 left-4 price-badge text-xs font-body font-medium px-3 py-1.5 rounded-full shadow">
+            From ₹22,499/person
+          </div>
+          <div class="absolute top-4 right-4 bg-sky text-white text-[10px] font-body font-medium px-2.5 py-1 rounded-full">Most Popular</div>
+          <div class="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-pine/60 to-transparent"></div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <p class="font-body text-xs text-sky uppercase tracking-widest mb-1">Thrills</p>
+              <h3 class="font-display text-snow text-2xl font-semibold">Adventure Circuit</h3>
+            </div>
+            <svg class="w-8 h-8 text-gold/50 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <p class="font-body text-snow/70 text-sm leading-relaxed mb-5">Trekking in Sonamarg, white-water rafting on the Lidder, skiing at Gulmarg, and camping under the Milky Way in Gurez Valley.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="flex items-center gap-2 font-body text-xs text-snow/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>6 Nights / 7 Days</li>
+            <li class="flex items-center gap-2 font-body text-xs text-snow/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Camps + Boutique Stays</li>
+            <li class="flex items-center gap-2 font-body text-xs text-snow/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Expert Local Guides</li>
+          </ul>
+          <a href="#contact" class="mt-auto block text-center bg-gold text-white font-body text-sm font-medium py-3 px-6 rounded-full hover:bg-gold-light transition-colors">Request This Package</a>
+        </div>
+      </div>
+
+      <!-- Card 3: Family -->
+      <div class="tour-card bg-white rounded-2xl overflow-hidden shadow-sm border border-pine/8 reveal flex flex-col" style="transition-delay:.2s">
+        <div class="relative h-56 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1572214536553-f7fd4fdec36b?w=700&q=80" alt="Family Kashmir" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy"/>
+          <div class="absolute top-4 left-4 price-badge text-xs font-body font-medium px-3 py-1.5 rounded-full shadow">
+            From ₹18,999/person
+          </div>
+          <div class="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-white/80 to-transparent"></div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <p class="font-body text-xs text-sky uppercase tracking-widest mb-1">Together</p>
+              <h3 class="font-display text-pine text-2xl font-semibold">Family Delight</h3>
+            </div>
+            <svg class="w-8 h-8 text-gold/40 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <p class="font-body text-pine/65 text-sm leading-relaxed mb-5">Kid-friendly Pahalgam meadows, Mughal Garden walks, pony rides in Gulmarg, and apple orchard visits with hands-on Kashmiri cooking classes.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="flex items-center gap-2 font-body text-xs text-pine/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>5 Nights / 6 Days</li>
+            <li class="flex items-center gap-2 font-body text-xs text-pine/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Family Suites / Cottages</li>
+            <li class="flex items-center gap-2 font-body text-xs text-pine/70"><svg class="w-3.5 h-3.5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Child-Friendly Activities</li>
+          </ul>
+          <a href="#contact" class="mt-auto block text-center bg-pine text-snow font-body text-sm font-medium py-3 px-6 rounded-full hover:bg-pine-light transition-colors">Request This Package</a>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="text-center mt-10 font-body text-pine/50 text-sm reveal">All packages are fully customizable. <a href="#contact" class="text-pine underline underline-offset-2 hover:text-gold transition-colors">Tell us your vision</a> and we'll craft it.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     GALLERY
+═══════════════════════════════════ -->
+<section id="gallery" class="py-20 sm:py-24 bg-snow-warm">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8">
+    <div class="text-center mb-12 reveal">
+      <p class="ornament text-pine/60 font-body text-xs tracking-[0.35em] uppercase mb-4">Visual Stories</p>
+      <h2 class="font-display text-pine text-4xl sm:text-5xl font-light">Kashmir Through<br/><em class="italic text-gold">Our Lens</em></h2>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 auto-rows-[160px] sm:auto-rows-[200px]">
+      <div class="col-span-2 row-span-2 rounded-2xl overflow-hidden reveal"><img src="https://images.unsplash.com/photo-1494791368093-85217fbbf8de?w=800&q=80" alt="Dal Lake" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy"/></div>
+      <div class="rounded-2xl overflow-hidden reveal" style="transition-delay:.1s"><img src="https://images.unsplash.com/photo-1605640840605-14ac1855827b?w=400&q=80" alt="Meadow" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy"/></div>
+      <div class="rounded-2xl overflow-hidden reveal" style="transition-delay:.15s"><img src="https://images.unsplash.com/photo-1521747116042-5a810fda9664?w=400&q=80" alt="Mountains" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy"/></div>
+      <div class="rounded-2xl overflow-hidden reveal" style="transition-delay:.2s"><img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=400&q=80" alt="Gulmarg" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy"/></div>
+      <div class="rounded-2xl overflow-hidden reveal" style="transition-delay:.25s"><img src="https://images.unsplash.com/photo-1605279940985-56f47b16fa25?w=400&q=80" alt="Pahalgam" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy"/></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════ -->
+<section class="py-20 bg-pine text-snow">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8">
+    <div class="text-center mb-12 reveal">
+      <p class="ornament text-gold/70 font-body text-xs tracking-[0.35em] uppercase mb-4">Traveller Stories</p>
+      <h2 class="font-display text-snow text-4xl sm:text-5xl font-light">Words from Our<br/><em class="italic text-gold">Happy Guests</em></h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-pine-light/40 border border-snow/10 rounded-2xl p-6 reveal">
+        <div class="flex gap-1 mb-4">
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <p class="font-display text-snow/80 text-lg italic mb-5 leading-relaxed">"Our honeymoon in Kashmir was beyond any dream. The houseboat, the Shikara at sunrise — Kashmir Travel Groups made it effortless."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gold/30 flex items-center justify-center font-display text-gold font-semibold text-sm">P</div>
+          <div>
+            <p class="font-body text-snow text-sm font-medium">Priya & Rahul Sharma</p>
+            <p class="font-body text-snow/50 text-xs">Delhi — Honeymoon Package</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-pine-light/40 border border-snow/10 rounded-2xl p-6 reveal" style="transition-delay:.1s">
+        <div class="flex gap-1 mb-4">
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <p class="font-display text-snow/80 text-lg italic mb-5 leading-relaxed">"The adventure circuit was phenomenal. The guides knew every hidden trail. Rafting on the Lidder was the highlight of my year!"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-sky/30 flex items-center justify-center font-display text-sky font-semibold text-sm">A</div>
+          <div>
+            <p class="font-body text-snow text-sm font-medium">Arjun Mehta</p>
+            <p class="font-body text-snow/50 text-xs">Mumbai — Adventure Package</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-pine-light/40 border border-snow/10 rounded-2xl p-6 reveal" style="transition-delay:.2s">
+        <div class="flex gap-1 mb-4">
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <p class="font-display text-snow/80 text-lg italic mb-5 leading-relaxed">"Travelling with two kids is no joke, but the team handled everything — from the pony rides to the Mughal gardens. A family memory for life."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gold/30 flex items-center justify-center font-display text-gold font-semibold text-sm">S</div>
+          <div>
+            <p class="font-body text-snow text-sm font-medium">Sunita & Vikram Patel</p>
+            <p class="font-body text-snow/50 text-xs">Bangalore — Family Package</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     LEAD GEN FORM
+═══════════════════════════════════ -->
+<section id="contact" class="py-20 sm:py-28 bg-snow bg-section-texture">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+      <!-- Left: Info -->
+      <div class="reveal">
+        <p class="ornament text-pine/60 font-body text-xs tracking-[0.35em] uppercase mb-4">Get In Touch</p>
+        <h2 class="font-display text-pine text-4xl sm:text-5xl font-light mb-6">Request a<br/><em class="italic text-gold">Custom Quote</em></h2>
+        <p class="font-body text-pine/65 text-base leading-relaxed mb-8">Every Kashmir journey we craft is completely bespoke. Share your travel dates, group size, and wishlist — our experts will reach out within 2 hours.</p>
+        <div class="space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-pine/8 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-5 h-5 text-pine" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </div>
+            <div>
+              <p class="font-body font-medium text-pine text-sm">Call / WhatsApp</p>
+              <a href="tel:+919876543210" class="font-body text-pine/65 text-sm hover:text-gold transition-colors">+91 98765 43210</a>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-pine/8 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-5 h-5 text-pine" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <p class="font-body font-medium text-pine text-sm">Email Us</p>
+              <a href="mailto:info@kashmirtravelgroups.com" class="font-body text-pine/65 text-sm hover:text-gold transition-colors">info@kashmirtravelgroups.com</a>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-pine/8 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-5 h-5 text-pine" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <div>
+              <p class="font-body font-medium text-pine text-sm">Office</p>
+              <p class="font-body text-pine/65 text-sm">Residency Road, Srinagar — 190001, J&K</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="bg-white rounded-3xl shadow-sm border border-pine/8 p-7 sm:p-10 reveal" style="transition-delay:.1s" x-data="{ submitted: false }" @submit.prevent="submitted = true">
+        <div x-show="!submitted">
+          <h3 class="font-display text-pine text-2xl font-semibold mb-6">Your Trip Details</h3>
+          <div class="space-y-4">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Full Name *</label>
+                <input type="text" placeholder="Your name" required class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+              </div>
+              <div>
+                <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Phone / WhatsApp *</label>
+                <input type="tel" placeholder="+91 XXXXX XXXXX" required class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+              </div>
+            </div>
+            <div>
+              <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Email Address</label>
+              <input type="email" placeholder="you@email.com" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Package Interest</label>
+                <select class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all appearance-none">
+                  <option value="">Select a package</option>
+                  <option>Honeymoon Bliss</option>
+                  <option>Adventure Circuit</option>
+                  <option>Family Delight</option>
+                  <option>Custom Package</option>
+                </select>
+              </div>
+              <div>
+                <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">No. of Travellers</label>
+                <input type="number" placeholder="e.g. 2" min="1" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Travel From</label>
+                <input type="date" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+              </div>
+              <div>
+                <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Travel To</label>
+                <input type="date" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+              </div>
+            </div>
+            <div>
+              <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Special Requests</label>
+              <textarea rows="3" placeholder="Honeymoon decor, dietary needs, accessibility requirements..." class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all resize-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-pine hover:bg-pine-light transition-colors text-snow font-body font-medium text-sm py-4 rounded-full flex items-center justify-center gap-2 mt-2">
+              Request My Quote
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </button>
+            <p class="font-body text-pine/40 text-xs text-center">We reply within 2 hours · No spam, ever</p>
+          </div>
+        </div>
+        <div x-show="submitted" class="text-center py-8">
+          <div class="w-14 h-14 rounded-full bg-pine/10 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-7 h-7 text-pine" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h4 class="font-display text-pine text-2xl font-semibold mb-2">Received!</h4>
+          <p class="font-body text-pine/65 text-sm">Our team will reach out to you within 2 hours. Check your WhatsApp!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     FOOTER
+═══════════════════════════════════ -->
+<footer class="bg-pine-dark text-snow/70 py-12">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+      <div class="sm:col-span-2 lg:col-span-1">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-7 h-7 rounded-full border border-gold/50 flex items-center justify-center">
+            <svg class="w-3.5 h-3.5 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <p class="font-display text-snow text-base font-semibold">Kashmir Travel Groups</p>
+        </div>
+        <p class="font-body text-xs leading-relaxed text-snow/50">A joint venture between Gateway to Heaven Tours & Travels and Look N Book Tours. Crafting paradise journeys since 2012.</p>
+      </div>
+      <div>
+        <p class="font-body text-xs uppercase tracking-widest text-snow/40 mb-4">Quick Links</p>
+        <ul class="space-y-2.5 font-body text-sm">
+          <li><a href="#packages" class="hover:text-gold transition-colors">Packages</a></li>
+          <li><a href="#about" class="hover:text-gold transition-colors">About Us</a></li>
+          <li><a href="#gallery" class="hover:text-gold transition-colors">Gallery</a></li>
+          <li><a href="#contact" class="hover:text-gold transition-colors">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-body text-xs uppercase tracking-widest text-snow/40 mb-4">Packages</p>
+        <ul class="space-y-2.5 font-body text-sm">
+          <li><a href="#contact" class="hover:text-gold transition-colors">Honeymoon Bliss</a></li>
+          <li><a href="#contact" class="hover:text-gold transition-colors">Adventure Circuit</a></li>
+          <li><a href="#contact" class="hover:text-gold transition-colors">Family Delight</a></li>
+          <li><a href="#contact" class="hover:text-gold transition-colors">Custom Tours</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-body text-xs uppercase tracking-widest text-snow/40 mb-4">Contact</p>
+        <ul class="space-y-2.5 font-body text-sm">
+          <li><a href="tel:+919876543210" class="hover:text-gold transition-colors">+91 98765 43210</a></li>
+          <li><a href="mailto:info@kashmirtravelgroups.com" class="hover:text-gold transition-colors text-xs">info@kashmirtravelgroups.com</a></li>
+          <li class="text-snow/50 text-xs leading-relaxed">Residency Road, Srinagar<br/>J&K — 190001</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-snow/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="font-body text-xs text-snow/35">© 2025 Kashmir Travel Groups. A joint venture of Gateway to Heaven Tours & Look N Book Tours.</p>
+      <p class="font-body text-xs text-snow/35">kashmirtravelgroups.com</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════
+     FLOATING WHATSAPP BUTTON
+═══════════════════════════════════ -->
+<a href="https://wa.me/919876543210?text=Hi%2C%20I%20am%20interested%20in%20a%20Kashmir%20package.%20Please%20share%20details." target="_blank" rel="noopener" aria-label="Chat on WhatsApp" class="wa-btn fixed bottom-6 right-5 sm:bottom-8 sm:right-8 z-50 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
+  <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.556 4.121 1.526 5.854L0 24l6.335-1.484A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.795 9.795 0 01-5.034-1.39l-.36-.214-3.732.875.934-3.638-.234-.374A9.77 9.77 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+</a>
+
+
+<!-- ═══════════════════════════════════
+     SCROLL REVEAL JS
+═══════════════════════════════════ -->
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
