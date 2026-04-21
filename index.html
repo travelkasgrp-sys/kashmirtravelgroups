@@ -507,28 +507,58 @@
       </div>
 
       <!-- Right: Form -->
-      <div class="bg-white rounded-3xl shadow-sm border border-pine/8 p-7 sm:p-10 reveal" style="transition-delay:.1s" x-data="{ submitted: false }" @submit.prevent="submitted = true">
+      <form class="bg-white rounded-3xl shadow-sm border border-pine/8 p-7 sm:p-10 reveal" style="transition-delay:.1s" x-data="{ 
+        submitted: false, 
+        loading: false,
+        async submitForm(e) {
+          e.preventDefault();
+          this.loading = true;
+          const formData = new FormData(e.target);
+          
+          try {
+            const response = await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              body: formData
+            });
+            
+            if (response.ok) {
+              this.submitted = true;
+              e.target.reset();
+            } else {
+              alert('There was an error submitting the form. Please try again.');
+            }
+          } catch (error) {
+            console.error('Form submission error:', error);
+            alert('There was an error submitting the form. Please try again.');
+          } finally {
+            this.loading = false;
+          }
+        }
+      }" @submit.prevent="submitForm" method="POST" action="https://api.web3forms.com/submit">
         <div x-show="!submitted">
           <h3 class="font-display text-pine text-2xl font-semibold mb-6">Your Trip Details</h3>
+          <input type="hidden" name="access_key" value="db93e7eb-0516-4c12-8226-6b230294290b">
+          <input type="hidden" name="subject" value="New Kashmir Travel Quote Request">
+          <input type="hidden" name="from_name" value="Kashmir Travel Groups">
           <div class="space-y-4">
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
                 <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Full Name *</label>
-                <input type="text" placeholder="Your name" required class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+                <input type="text" name="full_name" placeholder="Your name" required class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
               </div>
               <div>
                 <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Phone / WhatsApp *</label>
-                <input type="tel" placeholder="+91 XXXXX XXXXX" required class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+                <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
               </div>
             </div>
             <div>
               <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Email Address</label>
-              <input type="email" placeholder="you@email.com" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+              <input type="email" name="email" placeholder="you@email.com" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
             </div>
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
                 <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Package Interest</label>
-                <select class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all appearance-none">
+                <select name="package" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all appearance-none">
                   <option value="">Select a package</option>
                   <option>Honeymoon Bliss</option>
                   <option>Adventure Circuit</option>
@@ -538,26 +568,27 @@
               </div>
               <div>
                 <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">No. of Travellers</label>
-                <input type="number" placeholder="e.g. 2" min="1" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+                <input type="number" name="travelers" placeholder="e.g. 2" min="1" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
               </div>
             </div>
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
                 <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Travel From</label>
-                <input type="date" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+                <input type="date" name="travel_from" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
               </div>
               <div>
                 <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Travel To</label>
-                <input type="date" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
+                <input type="date" name="travel_to" class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all" />
               </div>
             </div>
             <div>
               <label class="font-body text-xs text-pine/60 uppercase tracking-wide mb-1.5 block">Special Requests</label>
-              <textarea rows="3" placeholder="Honeymoon decor, dietary needs, accessibility requirements..." class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all resize-none"></textarea>
+              <textarea rows="3" name="special_requests" placeholder="Honeymoon decor, dietary needs, accessibility requirements..." class="form-input w-full border border-pine/20 rounded-xl px-4 py-3 font-body text-sm text-pine bg-snow/60 transition-all resize-none"></textarea>
             </div>
-            <button type="submit" class="w-full bg-pine hover:bg-pine-light transition-colors text-snow font-body font-medium text-sm py-4 rounded-full flex items-center justify-center gap-2 mt-2">
-              Request My Quote
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            <button type="submit" :disabled="loading" class="w-full bg-pine hover:bg-pine-light transition-colors text-snow font-body font-medium text-sm py-4 rounded-full flex items-center justify-center gap-2 mt-2 disabled:opacity-60 disabled:cursor-not-allowed">
+              <span x-show="!loading">Request My Quote</span>
+              <span x-show="loading" class="flex items-center gap-2"><svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v4m0 12v4M4.22 4.22l2.83 2.83m5.9 5.9l2.83 2.83M4.22 19.78l2.83-2.83m5.9-5.9l2.83-2.83m9.9-9.9l-2.83 2.83m-5.9 5.9l-2.83 2.83m2.83 5.9l-2.83 2.83M19.78 4.22l-2.83 2.83m-5.9 5.9l-2.83 2.83" />
+              </svg> Submitting...</span>
             </button>
             <p class="font-body text-pine/40 text-xs text-center">We reply within 2 hours · No spam, ever</p>
           </div>
@@ -569,7 +600,7 @@
           <h4 class="font-display text-pine text-2xl font-semibold mb-2">Received!</h4>
           <p class="font-body text-pine/65 text-sm">Our team will reach out to you within 2 hours. Check your WhatsApp!</p>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </section>
