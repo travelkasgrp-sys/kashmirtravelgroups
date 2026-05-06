@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Block irrelevant crawl budget usage
+Disallow: /assets/images/gallery/
+Disallow: /assets/images/packages/
+
+# Allow hero image (important for Google Image Search)
+Allow: /assets/images/hero/
+
+Sitemap: https://www.kashmirtravelgroups.com/sitemap.xml
